@@ -10,9 +10,9 @@ or update. Every request must only accept this `Content-type: application/json`.
 
 ### Badges
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/yaritaft/cursor-backend-challenge/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/yaritaft/cursor-backend-challenge/tree/master)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/OssFit/code-challenge-base-project/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/OssFit/code-challenge-base-project/tree/main)
 
-[![Coverage Status](https://coveralls.io/repos/github/yaritaft/cursor-backend-challenge/badge.svg)](https://coveralls.io/github/yaritaft/cursor-backend-challenge)
+[![Coverage Status](https://coveralls.io/repos/github/OssFit/code-challenge-base-project/badge.svg?branch=main)](https://coveralls.io/github/OssFit/code-challenge-base-project?branch=main)
 
 ### How to run locally coveralls
 
