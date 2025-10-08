@@ -6,7 +6,7 @@ or update. Every request must only accept this `Content-type: application/json`.
 
 ## Deployed App Running on HEROKU
 
-- [SWAGGER](https://blooming-garden-01349-26f398f01a3b.herokuapp.com/api)
+- [SWAGGER](https://peaceful-plains-22734-d7b1d0848c71.herokuapp.com/api)
 
 ### Badges
 
