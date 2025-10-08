@@ -5,14 +5,14 @@ services:
     command: >
       sh -c "npm run start:prod"
     depends_on:
-      - postgres
+      - db
+    ports:
+      - 3000:3000
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
     environment:
-      - POSTGRES_HOST=postgres
+      - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -21,7 +21,7 @@ services:
       - POKEMON_API_URL=https://pokeapi.co/api/v2/pokemon
     restart: unless-stopped
 
-  postgres:
+  db:
     image: postgres:15
     ports:
       - 5432:5432

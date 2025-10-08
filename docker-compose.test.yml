@@ -2,36 +2,34 @@ version: "3.8"
 
 services:
   api:
-    command: >
-      sh -c "npm run test:e2e"
-    depends_on:
-      - postgres
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - db
     ports:
-      - 3000:3000
+      - 3001:3000
     environment:
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres
-      - DATABASE_NAME=postgres
-      - DATABASE_SYNC=true
-      - POKEMON_API_URL=https://pokeapi.co/api/v2
-    restart: unless-stopped
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_test
+      - NODE_ENV=test
+      - POKEMON_API_URL=https://pokeapi.co/api/v2/pokemon
+    command: >
+      sh -c "npm run test:e2e"
 
-  postgres:
+  db:
     image: postgres:15
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: postgres_test
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - postgres_test_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres_test_data:
