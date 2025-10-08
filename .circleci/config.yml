@@ -12,20 +12,20 @@ jobs:
     docker:
       - image: cimg/node:24.9.0
         environment:
-          - POSTGRES_HOST= 0.0.0.0
-          - POSTGRES_PORT=5432
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=postgres
-          - POSTGRES_SYNC=true
-          - POSTGRES_DB=postgres
-          - POKEMON_API_URL=https://pokeapi.co/api/v2/pokemon
-          - COVERALLS_REPO_TOKEN=CYIAB6IkTwPhruIrphrTHGJGdJc5pUDfv
+          DATABASE_HOST: 0.0.0.0
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: usersdb_test
+          DATABASE_SYNC: true
+          POKEMON_API_URL: https://pokeapi.co/api/v2/pokemon
+          COVERALLS_REPO_TOKEN: CYIAB6IkTwPhruIrphrTHGJGdJc5pUDfv
       #Service container image
       - image: cimg/postgres:15.0
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_DB: usersdb_test
     executor: node/default
 
     steps:
@@ -42,6 +42,10 @@ jobs:
           root: ~/project
           paths:
             - .
+      - coveralls/upload:
+          parallel: true
+          flag_name: Test 1
+          verbose: true
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/guides/orchestrate/workflows/ & https://circleci.com/docs/reference/configuration-reference/#workflows
