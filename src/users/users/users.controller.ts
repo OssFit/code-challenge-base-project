@@ -89,7 +89,7 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  ): Promise<User | null> {
     return this.usersService.update(Number(id), updateUserDto);
   }
 

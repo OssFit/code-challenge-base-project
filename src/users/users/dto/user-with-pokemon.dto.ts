@@ -1,42 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PokemonDetails } from 'src/clients/clients/pokemon.client';
 import { User } from '../users.entity';
+import { PokemonDetails } from '../../../clients/clients/pokemon.client';
 
 export class UserWithPokemonDto {
   @ApiProperty({
-    description: 'The id of the user',
+    description: 'The unique identifier of the user',
     example: 1,
   })
   id: number;
 
   @ApiProperty({
     description: 'The username of the user',
-    example: 'oss_dev',
+    example: 'johndoe',
   })
   username: string;
 
   @ApiProperty({
     description: 'The email of the user',
-    example: 'oss_dev@dev.com',
+    example: 'john@example.com',
   })
   email: string;
 
   @ApiProperty({
-    description: 'The pokemon ids of the user',
-    example: [1, 2, 3],
+    description: 'List of Pokemon IDs owned by the user',
+    example: [1, 4, 7],
+    type: [Number],
   })
   pokemonIds: number[];
 
   @ApiProperty({
-    description: 'The pokemon of the user',
-    example: [{ id: 1, name: 'pikachu' }],
+    description: 'Details of Pokemon owned by the user',
+    example: [
+      { id: 1, name: 'bulbasaur' },
+      { id: 4, name: 'charmander' },
+      { id: 7, name: 'squirtle' },
+    ],
+    type: 'array',
   })
   pokemon: PokemonDetails[];
-  @ApiProperty({
-    description: 'The password of the user',
-    example: 'password',
-  })
-  password: string;
 
   constructor(user: User, pokemon: PokemonDetails[]) {
     this.id = user.id;
@@ -44,6 +45,5 @@ export class UserWithPokemonDto {
     this.email = user.email;
     this.pokemonIds = user.pokemonIds;
     this.pokemon = pokemon;
-    this.password = user.password;
   }
 }

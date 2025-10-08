@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { User } from './users.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithPokemonDto } from './dto';
 
 @Injectable()
@@ -15,38 +14,49 @@ export class UsersService {
   async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return user;
   }
 
   async findByIdWithPokemon(id: number): Promise<UserWithPokemonDto> {
-    const user = await this.usersRepository.findByIdWithPokemon(id);
+    const result = await this.usersRepository.findByIdWithPokemon(id);
+    if (!result) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return {
+      id: result.user.id,
+      username: result.user.username,
+      email: result.user.email,
+      pokemonIds: result.user.pokemonIds,
+      pokemon: result.pokemon,
+    };
+  }
+
+  create(userData: Omit<User, 'id'>): Promise<User> {
+    return this.usersRepository.create(userData);
+  }
+
+  async update(id: number, userData: Partial<User>): Promise<User> {
+    const user = await this.usersRepository.update(id, userData);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return new UserWithPokemonDto(user.user, user.pokemon);
+    return user;
   }
 
-  create(user: User): Promise<User> {
-    return this.usersRepository.create(user);
+  async delete(id: number): Promise<void> {
+    const deleted = await this.usersRepository.delete(id);
+    if (!deleted) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const existingUser = await this.usersRepository.findById(id);
-    if (!existingUser) {
-      throw new NotFoundException('User not found');
+  async updatePokemonIds(id: number, pokemonIds: number[]): Promise<User> {
+    const user = await this.usersRepository.updatePokemonIds(id, pokemonIds);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-
-    // Create updated user with existing data and new data
-    const updatedUser = new User(
-      id,
-      updateUserDto.username ?? existingUser.username,
-      updateUserDto.email ?? existingUser.email,
-      updateUserDto.password ?? existingUser.password,
-      updateUserDto.pokemonIds ?? existingUser.pokemonIds,
-    );
-
-    return this.usersRepository.update(id, updatedUser);
+    return user;
   }
 }
