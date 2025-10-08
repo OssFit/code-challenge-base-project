@@ -34,7 +34,7 @@ const dataSourceConfig = url
       password,
       database,
       entities: [User],
-      synchronize: false,
+      synchronize,
       migrations: [
         join(__dirname, '..', 'migrations', '*.{ts,js}'),
         join(__dirname, '..', 'seed-migrations', '*.{ts,js}'),
