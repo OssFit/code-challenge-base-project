@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.entity';
+import { UpdatePokemonIdsDto } from './dto/update-pokemon-ids.dto';
 
 @ApiTags('users')
 @Controller('users')
