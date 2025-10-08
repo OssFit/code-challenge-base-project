@@ -24,7 +24,7 @@ const dataSourceConfig = url
       url,
       entities: [User],
       synchronize,
-      migrations: [join(__dirname, '..', 'migrations', '*.{ts,js}')],
+      migrations: [join(__dirname, 'database', 'migrations', '*.{ts,js}')],
     }
   : {
       type: 'postgres' as const,
@@ -36,8 +36,8 @@ const dataSourceConfig = url
       entities: [User],
       synchronize,
       migrations: [
-        join(__dirname, '..', 'migrations', '*.{ts,js}'),
-        join(__dirname, '..', 'seed-migrations', '*.{ts,js}'),
+        join(__dirname, 'database', 'migrations', '*.{ts,js}'),
+        join(__dirname, 'database', 'seed-migrations', '*.{ts,js}'),
       ],
       migrationsTableName: 'custom_migration_table',
     };
