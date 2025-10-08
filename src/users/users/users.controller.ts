@@ -1,58 +1,120 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UserResponseDto, UserWithPokemonDto } from './dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './users.entity';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({
-    description: 'Get all users',
-    status: 200,
+  @ApiOkResponse({
+    description: 'Returns all users',
     type: UserResponseDto,
     isArray: true,
   })
-  findAll(): Promise<UserResponseDto[]> {
-    return this.usersService.findAll();
+  async findAll(): Promise<User[]> {
+    try {
+      return this.usersService.findAll();
+    } catch (e) {
+      // Si el breaker está OPEN y no hay fallback, respondé 503
+      throw new HttpException(
+        { message: 'Servicio externo no disponible' },
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get a user by id' })
-  @ApiResponse({
-    description: 'Get a user by id',
-    status: 200,
+  @ApiOperation({
+    summary: 'Get a user by id with their Pokemon details including names',
+  })
+  @ApiParam({ name: 'id', description: 'The user id' })
+  @ApiOkResponse({
+    description:
+      'Returns the user with the specified id and their Pokemon details (including names) fetched from the Pokemon API',
     type: UserWithPokemonDto,
   })
-  findById(@Param('id') id: number): Promise<UserWithPokemonDto> {
-    return this.usersService.findByIdWithPokemon(id);
+  async findById(@Param('id') id: string): Promise<UserWithPokemonDto> {
+    return this.usersService.findByIdWithPokemon(Number(id));
   }
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiResponse({
-    description: 'Create a new user',
-    status: 201,
+  @ApiBody({ type: CreateUserDto })
+  @ApiCreatedResponse({
+    description: 'The user has been successfully created',
     type: UserResponseDto,
   })
-  create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    // Ensure pokemonIds is always an array
+    const userData = {
+      ...createUserDto,
+      pokemonIds: createUserDto.pokemonIds || [],
+    };
+    return this.usersService.create(userData as any);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update a user by id' })
-  @ApiResponse({
-    description: 'Update a user by id',
-    status: 200,
+  @ApiOperation({ summary: 'Update a user including their Pokemon IDs' })
+  @ApiParam({ name: 'id', description: 'The user id' })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiOkResponse({
+    description:
+      'The user has been successfully updated with all provided fields including Pokemon IDs if provided',
     type: UserResponseDto,
   })
-  update(
-    @Param('id') id: number,
+  async update(
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserResponseDto> {
-    return this.usersService.update(id, updateUserDto);
+  ): Promise<User> {
+    return this.usersService.update(Number(id), updateUserDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiParam({ name: 'id', description: 'The user id' })
+  @ApiOkResponse({ description: 'The user has been successfully deleted' })
+  async delete(@Param('id') id: string): Promise<void> {
+    return this.usersService.delete(Number(id));
+  }
+
+  @Put(':id/pokemon')
+  @ApiOperation({ summary: "Update a user's Pokemon IDs" })
+  @ApiParam({ name: 'id', description: 'The user id' })
+  @ApiBody({ type: UpdatePokemonIdsDto })
+  @ApiOkResponse({
+    description: "The user's Pokemon IDs have been successfully updated",
+    type: UserResponseDto,
+  })
+  async updatePokemonIds(
+    @Param('id') id: string,
+    @Body() updatePokemonIdsDto: UpdatePokemonIdsDto,
+  ): Promise<User> {
+    return this.usersService.updatePokemonIds(
+      Number(id),
+      updatePokemonIdsDto.pokemonIds,
+    );
   }
 }

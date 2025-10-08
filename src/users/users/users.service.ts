@@ -29,10 +29,10 @@ export class UsersService {
   }
 
   create(user: User): Promise<User> {
-    return this.usersRepository.createOrUpdate(user);
+    return this.usersRepository.create(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
     const existingUser = await this.usersRepository.findById(id);
     if (!existingUser) {
       throw new NotFoundException('User not found');
@@ -47,6 +47,6 @@ export class UsersService {
       updateUserDto.pokemonIds ?? existingUser.pokemonIds,
     );
 
-    return this.usersRepository.createOrUpdate(updatedUser);
+    return this.usersRepository.update(id, updatedUser);
   }
 }
