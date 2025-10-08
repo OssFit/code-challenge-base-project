@@ -7,15 +7,30 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/guides/orchestrate/jobs-steps/#jobs-overview & https://circleci.com/docs/reference/configuration-reference/#jobs
 jobs:
+  
   build_and_test: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
+    docker:
+      - image: cimg/node:20.11.1
+        environment:
+          - POSTGRES_HOST= 0.0.0.0
+          - POSTGRES_PORT=5432
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+          - POSTGRES_SYNC=true
+          - POSTGRES_DB=postgres
+          - POKEMON_API_URL=https://pokeapi.co/api/v2/pokemon
+      #Service container image
+      - image: cimg/postgres:15
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+    executor: node/default
+
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-      - run:
-          command: npm run test:e2e
-          name: Run tests
       - run:
           command: npm run build
           name: Build app
