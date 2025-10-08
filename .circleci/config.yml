@@ -10,7 +10,7 @@ jobs:
   
   build_and_test: # this can be any name you choose
     docker:
-      - image: cimg/node:20.11.1
+      - image: cimg/node:24.9.0
         environment:
           - POSTGRES_HOST= 0.0.0.0
           - POSTGRES_PORT=5432
@@ -20,7 +20,7 @@ jobs:
           - POSTGRES_DB=postgres
           - POKEMON_API_URL=https://pokeapi.co/api/v2/pokemon
       #Service container image
-      - image: cimg/postgres:15
+      - image: cimg/postgres:15.0
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
