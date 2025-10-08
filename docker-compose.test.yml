@@ -16,7 +16,7 @@ services:
       - DATABASE_PASSWORD=postgres
       - DATABASE_NAME=postgres
       - DATABASE_SYNC=true
-      - POKEMON_API_URL=https://pokeapi.co/api/v2/pokemon
+      - POKEMON_API_URL=https://pokeapi.co/api/v2
     command: >
       sh -c "npm run test:e2e"
 
